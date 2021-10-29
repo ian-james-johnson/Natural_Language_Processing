@@ -3,6 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+import unicodedata
+import json
+
+import nltk
+from nltk.tokenize.toktok import ToktokTokenizer
+from nltk.corpus import stopwords
+
+
+
 def parse_gulde_news():
     """ 
     Returns a dataframe of scraped web-scraping-demo.zgulde.net/news 
@@ -62,7 +71,7 @@ def acquire_codeup_blog(url):
     """
     agent = 'codeup ds germain' # set the agent
     response = requests.get(url, headers={'User-Agent': agent}) # query
-    soup = BeautifulSoup(response.text) # soup
+    soup = BeautifulSoup(response.text, features="lxml") # soup, added features argument to prevent warning
     title = soup.select('.entry-title')[0].text # get title
     date = soup.select('.published')[0].text # get date
     category = soup.find_all('a', {'rel':'category tag'})[0].text # get category
@@ -93,7 +102,7 @@ def get_article(url):
     """
     agent = 'codeup ds germain' # set the agent
     response = requests.get(url, headers={'User-Agent': agent}) # query
-    soup = BeautifulSoup(response.text) # soup
+    soup = BeautifulSoup(response.text, features="lxml") # soup, added features argument to prevent warning
     category = soup.find_all('li', {'class':'active-category selected'})[0].text # get category
     cards = soup.select('.news-card') # get raw cards
     card_dict_list = [] # create list of dicts for dataframe
